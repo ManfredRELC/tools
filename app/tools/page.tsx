@@ -16,7 +16,7 @@ export default function ToolsDashboardPage() {
       <header>
         <div>
           <p className="brand-eyebrow">Manfred Real Estate Learning Center — Membership Plus</p>
-          <h1>Agent Tools</h1>
+          <h1>Manfred SMART Board</h1>
           <p className="sub">AI-powered marketing tools built for Membership Plus subscribers.</p>
         </div>
       </header>

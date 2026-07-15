@@ -1,4 +1,4 @@
-# Manfred RELC — Agent Tools
+# Manfred RELC — Manfred SMART Board
 
 AI-powered tools for Manfred Real Estate Learning Center's Membership Plus subscribers, at `tools.manfredrelc.com`.
 

@@ -22,7 +22,7 @@ export function Header() {
     <header className="site-header">
       <Link href="/tools" className="site-brand">
         <span className="pin" />
-        Manfred RELC · Agent Tools
+        Manfred RELC · Manfred SMART Board
       </Link>
       <nav className="site-nav">
         {NAV_ITEMS.map((item) => (

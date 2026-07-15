@@ -24,7 +24,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Manfred RELC — Agent Tools",
+  title: "Manfred RELC — Manfred SMART Board",
   description: "AI-powered marketing and productivity tools for Manfred Real Estate Learning Center Membership Plus subscribers.",
 };
 

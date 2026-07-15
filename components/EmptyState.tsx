@@ -7,7 +7,7 @@ export function EmptyState({
   desc: string;
   tone?: "neutral" | "error";
 }) {
-  const stroke = tone === "error" ? "#A8483C" : "#5B6472";
+  const stroke = tone === "error" ? "#A8483C" : "#4B5563";
   return (
     <div className="empty-state">
       {tone === "error" ? (

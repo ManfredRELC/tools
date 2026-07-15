@@ -39,7 +39,7 @@ function LoginForm() {
     <div className="login-wrap">
       <div className="login-card">
         <p className="brand-eyebrow">Manfred Real Estate Learning Center</p>
-        <h1>Agent Tools</h1>
+        <h1>Manfred SMART Board</h1>
         <p className="sub">
           Enter the Membership Plus tools password to continue. Check your welcome email if you
           don&apos;t have it handy.
