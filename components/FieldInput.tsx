@@ -2,6 +2,7 @@
 
 import { FieldDef } from "@/lib/categories";
 import { Field } from "./Field";
+import { MicButton } from "./MicButton";
 
 export function FieldInput({
   field,
@@ -22,7 +23,12 @@ export function FieldInput({
   return (
     <Field label={field.label} hint={field.hint}>
       {field.type === "textarea" ? (
-        <textarea {...commonProps} placeholder={field.placeholder} />
+        <div className="textarea-wrap">
+          <textarea {...commonProps} placeholder={field.placeholder} />
+          <MicButton
+            onTranscript={(text) => onChange(field.key, value.trim() ? `${value.trim()} ${text}` : text)}
+          />
+        </div>
       ) : field.type === "select" ? (
         <select {...commonProps}>
           {(field.options ?? []).map((option) => (

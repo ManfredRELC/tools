@@ -86,7 +86,7 @@ The app is set up so a third tool is mostly copy-and-adapt, not a rebuild:
 1. Add a new prompt builder in `lib/prompts/`.
 2. Add a new API route in `app/api/<tool-name>/route.ts` that calls `generateJSON()` from `lib/anthropic.ts` (this already handles the server-side Anthropic call, JSON parsing, and a retry if the model wraps its answer in extra text).
 3. Add a new page in `app/tools/<tool-name>/page.tsx`, reusing the shared components in `components/` (`Field`, `ToneChips`, `ResultCard`, `EmptyState`, etc.) so it automatically matches the existing look.
-4. Add an entry to the `TOOLS` array in `app/tools/page.tsx` (dashboard) and to `NAV_ITEMS` in `components/Header.tsx` (top nav).
+4. Add an entry to the `TOOLS` array in `app/tools/page.tsx` (dashboard, including an icon from `components/icons.tsx` — add a new one there if none fit) and to `NAV_ITEMS` in `components/Header.tsx` (top nav).
 
 Every tool automatically sits behind the same password gate — nothing extra needed there.
 
