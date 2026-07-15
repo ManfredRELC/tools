@@ -23,12 +23,11 @@ export default function ToolsDashboardPage() {
 
       <div className="tool-cards">
         {TOOLS.map((tool) => (
-          <Link key={tool.href} href={tool.href} className="tool-card">
+          <Link key={tool.href} href={tool.href} className="tool-card" title={tool.description}>
             <span className="tool-card-icon">
-              <tool.Icon />
+              <tool.Icon width={36} height={36} />
             </span>
             <h2>{tool.title}</h2>
-            <p>{tool.description}</p>
           </Link>
         ))}
       </div>

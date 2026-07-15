@@ -627,19 +627,19 @@ textarea {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
   background: var(--paper-2);
   color: var(--brass);
-  margin-bottom: 14px;
+  margin-bottom: 16px;
 }
 
 .tool-card h2 {
   font-family: var(--font-serif);
   font-weight: 600;
   font-size: 20px;
-  margin: 0 0 8px;
+  margin: 0;
 }
 
 .tool-card p {
