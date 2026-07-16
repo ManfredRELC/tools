@@ -36,13 +36,13 @@ function parseJSON<T>(text: string): T {
 
 // Strips markdown fences and parses. On a parse failure, retries once with a
 // stricter follow-up instruction before giving up.
-export async function generateJSON<T>(prompt: string, maxTokens = 1000): Promise<T> {
-  const raw = await callModel(prompt, maxTokens);
+export async function generateJSON<T>(prompt: string, maxTokens = 1000, system?: string): Promise<T> {
+  const raw = await callModel(prompt, maxTokens, system);
   try {
     return parseJSON<T>(raw);
   } catch {
     const retryPrompt = `${prompt}\n\nYour previous response could not be parsed as valid JSON. Return ONLY the JSON described above, with no prose, no markdown fences, and no explanation.`;
-    const retryRaw = await callModel(retryPrompt, maxTokens);
+    const retryRaw = await callModel(retryPrompt, maxTokens, system);
     return parseJSON<T>(retryRaw);
   }
 }

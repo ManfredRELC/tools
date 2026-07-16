@@ -643,6 +643,36 @@ textarea {
   margin: 0;
 }
 
+/* ---------- Quoted-response output (Objection Response Assistant) ---------- */
+.objection-response {
+  font-family: var(--font-serif);
+  font-size: 19px;
+  line-height: 1.55;
+  color: var(--navy-dark);
+  margin: 0 0 18px;
+}
+
+.objection-why {
+  border-top: 1px dashed var(--line);
+  padding-top: 14px;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.objection-why b {
+  color: var(--navy-dark);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+}
+
+.objection-actions {
+  margin-top: 16px;
+}
+
 .footer-note {
   margin-top: 34px;
   padding-top: 18px;

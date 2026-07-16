@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { HomeIcon, PhoneIcon } from "@/components/icons";
+import { HomeIcon, PhoneIcon, ChatIcon } from "@/components/icons";
 
 const TOOLS = [
   {
@@ -13,6 +13,12 @@ const TOOLS = [
     title: "FSBO Outreach Script Generator",
     description: "Build a natural-sounding call, text, door-knock, or email script for a specific FSBO lead.",
     Icon: PhoneIcon,
+  },
+  {
+    href: "/tools/objection-response",
+    title: "Objection Response Assistant",
+    description: "Turn a FSBO seller's objection into a natural, ready-to-say response, with coaching notes.",
+    Icon: ChatIcon,
   },
 ];
 
