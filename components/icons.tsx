@@ -33,6 +33,16 @@ export function ClipboardCheckIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
+export function WandIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" {...props}>
+      <path d="M4 20 15 9" strokeLinecap="round" />
+      <path d="M17 3v3M17 9v3M13 6h3M20 6h1" strokeLinecap="round" />
+      <path d="m15 9 2 2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export function MicIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" {...props}>

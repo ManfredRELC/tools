@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { href: "/tools/outreach-script", label: "FSBO Outreach Script Generator" },
   { href: "/tools/objection-response", label: "Objection Response Assistant" },
   { href: "/tools/inspection-comments", label: "Inspection Report Comment Library" },
+  { href: "/tools/report-assistant", label: "AI Report Assistant" },
 ];
 
 export function Header() {

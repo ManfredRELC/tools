@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { HomeIcon, PhoneIcon, ChatIcon, ClipboardCheckIcon } from "@/components/icons";
+import { HomeIcon, PhoneIcon, ChatIcon, ClipboardCheckIcon, WandIcon } from "@/components/icons";
 import { PanelLabel } from "@/components/PanelLabel";
 
 const TOOL_CATEGORIES = [
@@ -36,6 +36,12 @@ const TOOL_CATEGORIES = [
         title: "Inspection Report Comment Library",
         description: "Search NY Standards of Practice-based report comments and build a report draft to copy in.",
         Icon: ClipboardCheckIcon,
+      },
+      {
+        href: "/tools/report-assistant",
+        title: "AI Report Assistant",
+        description: "Turn rough field notes into a compliant, report-ready narrative, checked against NY's Standards of Practice as it writes.",
+        Icon: WandIcon,
       },
     ],
   },

@@ -1079,3 +1079,48 @@ textarea {
   flex: 1;
   text-align: center;
 }
+
+/* ---------- AI Report Assistant: compliance-adjustments flag ---------- */
+/* A third narrowly-scoped utility color (purple), for the same reason as
+   the type-info/type-repair tags above: this flag is semantically distinct
+   from severity classification (it says "the AI removed something to stay
+   in scope"), so reusing gold/rust/navy here would blur that distinction. */
+.adjustments-block {
+  background: #efecf7;
+  border: 1px solid rgba(91, 75, 138, 0.2);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 16px;
+}
+
+.adjustments-label {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #5b4b8a;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.adjustments-block ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.adjustments-block li {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: #453a6b;
+  margin-bottom: 4px;
+}
+
+.no-adjustments {
+  font-size: 12.5px;
+  color: var(--muted);
+  font-style: italic;
+  margin: 0;
+}
