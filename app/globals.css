@@ -1712,3 +1712,102 @@ textarea {
   line-height: 1.5;
   color: var(--navy-dark);
 }
+
+/* ---------- Generic checkbox row (used by Fee Calculator's complexity list) ---------- */
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.checkbox-row input {
+  width: auto;
+}
+
+.checkbox-row label {
+  margin: 0;
+  font-weight: 500;
+  color: var(--navy-dark);
+}
+
+/* ---------- Fee Calculator ---------- */
+.rate-card-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.rate-card-row:last-child {
+  border-bottom: none;
+}
+
+.rate-card-row label {
+  font-size: 13px;
+  color: var(--navy-dark);
+}
+
+.rate-card-row input {
+  width: 110px;
+  text-align: right;
+  flex: none;
+}
+
+.rate-card-note {
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0 0 14px;
+}
+
+.rate-card-group-title {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 18px 0 4px;
+}
+
+.rate-card-group-title:first-child {
+  margin-top: 0;
+}
+
+.fee-breakdown {
+  margin-top: 20px;
+  border-top: 1px solid var(--line);
+  padding-top: 14px;
+}
+
+.fee-line {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13.5px;
+  padding: 5px 0;
+  color: var(--navy-dark);
+}
+
+.fee-line .label {
+  color: var(--muted);
+}
+
+.fee-line .amount {
+  font-family: var(--font-mono);
+}
+
+.fee-total-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--navy-dark);
+  padding-top: 12px;
+  margin-top: 8px;
+  border-top: 1px solid var(--line);
+}

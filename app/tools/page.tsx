@@ -12,6 +12,7 @@ import {
   MegaphoneIcon,
   GraduationCapIcon,
   MapPinIcon,
+  CalculatorIcon,
 } from "@/components/icons";
 import { PanelLabel } from "@/components/PanelLabel";
 
@@ -115,6 +116,12 @@ const TOOL_CATEGORIES = [
         title: "Property Lookup",
         description: "Look up a property's Census tract, plus a one-click link to FEMA's official flood map for that address.",
         Icon: MapPinIcon,
+      },
+      {
+        href: "/tools/fee-calculator",
+        title: "Fee Calculator",
+        description: "Set your own rate card once, then get a live, itemized quote based on property type, size, complexity, and rush timing.",
+        Icon: CalculatorIcon,
       },
     ],
   },
