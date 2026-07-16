@@ -72,12 +72,17 @@ async function tryFemaIdentify(
   lat: number,
   lon: number
 ): Promise<{ ok: true; results: FemaIdentifyResult[] } | { ok: false; detail: string }> {
-  const buffer = 0.001;
+  // TEMPORARY: querying "all" layers unrestricted (rather than "all:28") so
+  // we can see every layer that actually intersects the point, since the
+  // layer-28 restriction was coming back empty for a reason not yet known --
+  // either the wrong id or a genuinely unmapped point. Also widened the
+  // tolerance/extent in case precision was the culprit.
+  const buffer = 0.01;
   const mapExtent = `${lon - buffer},${lat - buffer},${lon + buffer},${lat + buffer}`;
   const url =
     `${base}/identify` +
-    `?geometry=${lon},${lat}&geometryType=esriGeometryPoint&sr=4326&layers=all:${FEMA_FLOOD_ZONE_LAYER_ID}` +
-    `&tolerance=2&mapExtent=${mapExtent}&imageDisplay=600,550,96&returnGeometry=false&f=json`;
+    `?geometry=${lon},${lat}&geometryType=esriGeometryPoint&sr=4326&layers=all` +
+    `&tolerance=10&mapExtent=${mapExtent}&imageDisplay=600,550,96&returnGeometry=false&f=json`;
 
   try {
     const res = await fetch(url, {
@@ -115,12 +120,29 @@ async function lookupFloodZone(lat: number, lon: number): Promise<FloodZoneResul
         attempt.results.find((r) => /flood hazard zone/i.test(r.layerName ?? ""));
       const attrs = floodLayer?.attributes;
 
-      const zone = (attrs?.FLD_ZONE as string | undefined) ?? null;
-      const subtype = (attrs?.ZONE_SUBTY as string | undefined) ?? null;
-      const sfhaRaw = attrs?.SFHA_TF as string | undefined;
-      const isSFHA = sfhaRaw === "T" ? true : sfhaRaw === "F" ? false : null;
+      if (attrs && Object.keys(attrs).length > 0) {
+        const zone = (attrs.FLD_ZONE as string | undefined) ?? null;
+        const subtype = (attrs.ZONE_SUBTY as string | undefined) ?? null;
+        const sfhaRaw = attrs.SFHA_TF as string | undefined;
+        const isSFHA = sfhaRaw === "T" ? true : sfhaRaw === "F" ? false : null;
+        return { zone, subtype, isSFHA, ...describeFloodZone(zone, subtype) };
+      }
 
-      return { zone, subtype, isSFHA, ...describeFloodZone(zone, subtype) };
+      // TEMPORARY: the request succeeded but nothing matched our flood-layer
+      // filter -- surface every layer that DID intersect this point so we
+      // can tell a real "unmapped point" apart from a wrong layer id/name.
+      const layerSummary = attempt.results.length
+        ? attempt.results.map((r) => `${r.layerId}:${r.layerName}`).join(", ")
+        : "(zero layers intersected this point)";
+      return {
+        zone: null,
+        subtype: null,
+        isSFHA: null,
+        riskLevel: "undetermined",
+        label: "No Data Returned",
+        description: `[debug] ${base} responded OK. Layers found here: ${layerSummary}`,
+        unavailable: true,
+      };
     }
     attempts.push(attempt.detail);
   }
