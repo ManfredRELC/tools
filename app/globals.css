@@ -587,6 +587,62 @@ textarea {
   color: var(--navy-dark);
 }
 
+/* ---------- Dark script-output panel (navy bg, gold-on-navy is contrast-safe) ---------- */
+.script-panel {
+  background: var(--navy);
+  color: var(--white);
+  border-radius: var(--radius);
+  padding: 22px 24px;
+}
+
+.script-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.script-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.script-copy-btn {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--white);
+  background: none;
+  border: 1px solid rgba(254, 254, 253, 0.35);
+  border-radius: var(--radius);
+  padding: 6px 12px;
+  cursor: pointer;
+  flex: none;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.script-copy-btn:hover {
+  border-color: var(--white);
+}
+
+.script-copy-btn.copied {
+  background: var(--sage);
+  border-color: var(--sage);
+}
+
+.script-body {
+  font-size: 14.5px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  margin: 0;
+}
+
 .footer-note {
   margin-top: 34px;
   padding-top: 18px;

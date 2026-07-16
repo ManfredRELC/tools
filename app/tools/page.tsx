@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { HomeIcon } from "@/components/icons";
+import { HomeIcon, PhoneIcon } from "@/components/icons";
 
 const TOOLS = [
   {
@@ -7,6 +7,12 @@ const TOOLS = [
     title: "Listing Description Generator",
     description: "Turn property specs into MLS-ready descriptions in the tone your buyers respond to.",
     Icon: HomeIcon,
+  },
+  {
+    href: "/tools/outreach-script",
+    title: "FSBO Outreach Script Generator",
+    description: "Build a natural-sounding call, text, door-knock, or email script for a specific FSBO lead.",
+    Icon: PhoneIcon,
   },
 ];
 

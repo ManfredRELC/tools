@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 const NAV_ITEMS = [
   { href: "/tools", label: "Dashboard" },
   { href: "/tools/listing-description", label: "Listing Description Generator" },
+  { href: "/tools/outreach-script", label: "FSBO Outreach Script Generator" },
 ];
 
 export function Header() {

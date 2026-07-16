@@ -11,14 +11,22 @@ function getClient(): Anthropic {
   return client;
 }
 
-async function callModel(prompt: string, maxTokens: number): Promise<string> {
+async function callModel(prompt: string, maxTokens: number, system?: string): Promise<string> {
   const response = await getClient().messages.create({
     model: MODEL,
     max_tokens: maxTokens,
     thinking: { type: "disabled" },
+    ...(system ? { system } : {}),
     messages: [{ role: "user", content: prompt }],
   });
   return response.content.map((block) => (block.type === "text" ? block.text : "")).join("\n");
+}
+
+// Plain-text generation (no JSON parsing) -- for tools whose output is a
+// single block of prose rather than structured variants.
+export async function generateText(prompt: string, maxTokens = 800, system?: string): Promise<string> {
+  const raw = await callModel(prompt, maxTokens, system);
+  return raw.trim();
 }
 
 function parseJSON<T>(text: string): T {
