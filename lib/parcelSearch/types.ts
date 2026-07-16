@@ -12,6 +12,7 @@ export interface ParcelResult {
   sourceName: string;
   fields: ParcelField[];
   rawAttributes: Record<string, unknown>;
+  addressMismatchWarning?: string;
 }
 
 export interface ParcelSearchResult {

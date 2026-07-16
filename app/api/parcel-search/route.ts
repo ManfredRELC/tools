@@ -40,7 +40,12 @@ function pickField(
 // the parcel polygons themselves (layer 0 is a county-coverage footprint).
 const NYS_PARCELS_LAYER_URL = "https://gisservices.its.ny.gov/arcgis/rest/services/NYS_Tax_Parcels_Public/MapServer/1";
 
-async function queryNysParcels(lat: number, lon: number): Promise<ParcelResult | null> {
+function extractHouseNumber(address: string): string | null {
+  const match = address.trim().match(/^(\d+[\d-]*)/);
+  return match ? match[1] : null;
+}
+
+async function queryNysParcels(lat: number, lon: number, searchedAddress: string): Promise<ParcelResult | null> {
   const buffer = 0.0004; // ~35m, forgiving of geocoder precision
   const envelope = `${lon - buffer},${lat - buffer},${lon + buffer},${lat + buffer}`;
   const url =
@@ -56,9 +61,11 @@ async function queryNysParcels(lat: number, lon: number): Promise<ParcelResult |
   const attrs: Record<string, unknown> | undefined = data?.features?.[0]?.attributes;
   if (!attrs) return null;
 
+  const siteAddressField = pickField(attrs, ["PARCEL_ADDR", "SITE_ADDRESS", "PROP_LOC", "LOCATION", "ADDRESS"], "Site Address");
+
   const fields = [
     pickField(attrs, ["PRINT_KEY", "SBL", "TAX_MAP_NUMBER", "PARCEL_ID"], "Parcel ID"),
-    pickField(attrs, ["PARCEL_ADDR", "SITE_ADDRESS", "PROP_LOC", "LOCATION", "ADDRESS"], "Site Address"),
+    siteAddressField,
     pickField(attrs, ["MUNI_NAME", "MUNICIPALITY", "CITY_TOWN"], "Municipality"),
     pickField(attrs, ["CALC_ACREAGE", "ACRES", "GIS_ACRES", "DEEDED_ACRES"], "Acreage", (v) => `${Number(v).toFixed(2)} acres`),
     pickField(attrs, ["FULL_MARKET_VALUE", "TOTAL_AV", "TOT_ASSESS_VALUE", "ASSESS_TOTAL"], "Assessed / Market Value", (v) =>
@@ -68,17 +75,40 @@ async function queryNysParcels(lat: number, lon: number): Promise<ParcelResult |
     pickField(attrs, ["PROP_CLASS", "PROPERTY_CLASS"], "Property Class"),
   ].filter((f): f is ParcelField => f !== null);
 
-  return { source: "nys-parcels", sourceName: "NYS Tax Parcels Public", fields, rawAttributes: attrs };
+  // Large or unusually-addressed properties (government campuses, etc.)
+  // don't always geocode to a precise rooftop point, so the spatial search
+  // can land on a neighboring parcel. Surface it rather than presenting a
+  // possible mismatch as confidently correct.
+  let addressMismatchWarning: string | undefined;
+  if (siteAddressField) {
+    const searchedNum = extractHouseNumber(searchedAddress);
+    const returnedNum = extractHouseNumber(siteAddressField.value);
+    if (searchedNum && returnedNum && searchedNum !== returnedNum) {
+      addressMismatchWarning = `You searched "${searchedAddress}", but the closest matched parcel is at "${siteAddressField.value}" -- double-check this is the right property before relying on it.`;
+    }
+  }
+
+  return { source: "nys-parcels", sourceName: "NYS Tax Parcels Public", fields, rawAttributes: attrs, addressMismatchWarning };
 }
 
 const PLUTO_RESOURCE_URL = "https://data.cityofnewyork.us/resource/64uk-42ks.json";
 
+function stripOrdinalSuffix(word: string): string {
+  // PLUTO's own address field drops ordinal suffixes on numbered streets --
+  // "5 AVENUE", not "5TH AVENUE" -- so normalize before matching against it.
+  return word.replace(/^(\d+)(ST|ND|RD|TH)$/i, "$1");
+}
+
 function addressSearchPrefix(matchedAddress: string): string {
-  // "123 MAIN ST, NEW YORK, NY, 10001" -> "123 MAIN" (house number + first
-  // street word), used as a forgiving prefix match against PLUTO's own
-  // address formatting, which may abbreviate street suffixes differently.
+  // "350 5TH AVE, NEW YORK, NY, 10118" -> "350 5" (house number + first
+  // street word, ordinal-stripped), used as a forgiving prefix match against
+  // PLUTO's own address formatting.
   const streetPart = matchedAddress.split(",")[0]?.trim() ?? "";
-  return streetPart.split(/\s+/).slice(0, 2).join(" ");
+  return streetPart
+    .split(/\s+/)
+    .slice(0, 2)
+    .map(stripOrdinalSuffix)
+    .join(" ");
 }
 
 async function queryPluto(matchedAddress: string, borough: string): Promise<ParcelResult | null> {
@@ -154,7 +184,9 @@ export async function POST(request: NextRequest) {
   let parcelError: string | null = null;
 
   try {
-    parcel = nycBorough ? await queryPluto(census.matchedAddress, nycBorough) : await queryNysParcels(census.lat, census.lon);
+    parcel = nycBorough
+      ? await queryPluto(census.matchedAddress, nycBorough)
+      : await queryNysParcels(census.lat, census.lon, census.matchedAddress);
   } catch (err) {
     console.error("Parcel data lookup failed", err);
     parcelError = "Couldn't reach the parcel data service just now. Try again in a moment.";

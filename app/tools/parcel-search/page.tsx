@@ -98,6 +98,11 @@ export default function ParcelSearchPage() {
                 <p className="rate-card-group-title" style={{ marginTop: 0 }}>
                   {result.parcel.sourceName}
                 </p>
+                {result.parcel.addressMismatchWarning ? (
+                  <div className="fixed-tone-note" style={{ marginBottom: 16 }}>
+                    {result.parcel.addressMismatchWarning}
+                  </div>
+                ) : null}
                 {result.parcel.fields.map((f, i) => (
                   <div className="fee-line" key={i}>
                     <span className="label">{f.label}</span>
