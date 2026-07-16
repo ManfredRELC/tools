@@ -18,6 +18,7 @@ const NAV_ITEMS = [
   { href: "/tools/social-posts", label: "Social Media Post Generator" },
   { href: "/tools/ce-tracker-home-inspector", label: "CE Tracker (Home Inspector)" },
   { href: "/tools/ce-tracker-appraiser", label: "CE Tracker (Appraiser)" },
+  { href: "/tools/property-lookup", label: "Property Lookup" },
 ];
 
 export function Header() {

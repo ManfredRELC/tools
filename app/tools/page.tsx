@@ -11,6 +11,7 @@ import {
   HandshakeIcon,
   MegaphoneIcon,
   GraduationCapIcon,
+  MapPinIcon,
 } from "@/components/icons";
 import { PanelLabel } from "@/components/PanelLabel";
 
@@ -108,6 +109,12 @@ const TOOL_CATEGORIES = [
         title: "CE Tracker",
         description: "Track continuing-education hours toward New York's 28-hour renewal requirement, including USPAP and Valuation Bias & Fair Housing.",
         Icon: GraduationCapIcon,
+      },
+      {
+        href: "/tools/property-lookup",
+        title: "Property Lookup",
+        description: "Look up a property's Census tract and FEMA flood zone designation from a single address search.",
+        Icon: MapPinIcon,
       },
     ],
   },
