@@ -1394,3 +1394,266 @@ textarea {
   text-decoration: line-through;
   text-decoration-color: var(--line);
 }
+
+/* ---------- CE Tracker (license countdown, category bars, cross-log, course list) ---------- */
+.ce-checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  margin-top: 4px;
+  margin-bottom: 6px;
+}
+
+.ce-checkbox-row input {
+  width: auto;
+}
+
+.ce-checkbox-row label {
+  margin: 0;
+  font-weight: 500;
+  color: var(--navy-dark);
+}
+
+.ce-countdown {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.ce-countdown-num {
+  font-family: var(--font-serif);
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--navy-dark);
+}
+
+/* Reuses the existing repair-amber utility color (already established for the
+   Inspection Comment Library's "repair recommended" tag) for the warn state,
+   and the brand's rust error color for the overdue state. */
+.ce-countdown-num.warn {
+  color: #9a5a24;
+}
+
+.ce-countdown-num.alert {
+  color: var(--rust);
+}
+
+.ce-countdown-label {
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.ce-cat-row {
+  margin-bottom: 12px;
+}
+
+.ce-cat-row-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12.5px;
+  margin-bottom: 5px;
+}
+
+.ce-cat-row-head .name {
+  font-weight: 600;
+  color: var(--navy-dark);
+}
+
+.ce-cat-row-head .ce-cat-min {
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.ce-cat-row-head .hrs {
+  font-family: var(--font-mono);
+  color: var(--muted);
+}
+
+.ce-cat-row-head .hrs.met {
+  color: var(--sage);
+}
+
+.ce-bar {
+  height: 8px;
+  border-radius: 99px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+
+.ce-bar-fill {
+  height: 100%;
+  background: var(--gold);
+  border-radius: 99px;
+  transition: width 0.3s;
+}
+
+.ce-bar-fill.met {
+  background: var(--sage);
+}
+
+.ce-add-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 6px;
+}
+
+@media (max-width: 640px) {
+  .ce-add-form {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ce-add-btn {
+  grid-column: 1 / -1;
+  background: var(--navy);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius);
+  padding: 11px 18px;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 13.5px;
+  cursor: pointer;
+}
+
+.ce-add-btn:hover {
+  background: #0c1c3c;
+}
+
+.ce-cross-toggle {
+  grid-column: 1 / -1;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--navy-dark);
+  cursor: pointer;
+  padding: 8px 0;
+  user-select: none;
+}
+
+.ce-cross-section {
+  grid-column: 1 / -1;
+  border: 1px dashed var(--line);
+  border-radius: 10px;
+  padding: 14px 16px;
+  background: var(--paper);
+}
+
+.ce-cross-block {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.ce-cross-block:last-child {
+  border-bottom: none;
+}
+
+.ce-cross-block-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--navy-dark);
+  margin-bottom: 8px;
+}
+
+.ce-cross-block-head input {
+  width: auto;
+}
+
+.ce-cross-block-head label {
+  margin: 0;
+}
+
+.ce-cross-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+
+@media (max-width: 640px) {
+  .ce-cross-fields {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ce-cross-fields input:disabled,
+.ce-cross-fields select:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Success toast reuses the same darkened-sage tint established for the
+   Review Generation Templates "positive" tag -- the app's one utility color
+   for a confirmation/success state. */
+.ce-toast {
+  font-size: 12.5px;
+  color: #46543c;
+  background: rgba(110, 127, 99, 0.12);
+  border: 1px solid rgba(110, 127, 99, 0.3);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-top: 10px;
+}
+
+.ce-course-list {
+  margin-top: 16px;
+}
+
+.ce-course-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  margin-bottom: 8px;
+  background: var(--paper);
+}
+
+.ce-course-item .info {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.ce-course-item .name {
+  font-weight: 600;
+  color: var(--navy-dark);
+}
+
+.ce-course-item .meta {
+  font-size: 11.5px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+}
+
+.ce-course-item .cross-tag {
+  color: var(--navy-dark);
+}
+
+.ce-course-empty {
+  font-size: 12.5px;
+  color: var(--muted);
+  font-style: italic;
+  padding: 10px 0;
+  text-align: center;
+}
+
+.ce-rm-btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.ce-rm-btn:hover {
+  color: var(--rust);
+}

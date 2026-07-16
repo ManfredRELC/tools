@@ -8,6 +8,7 @@ const NAV_ITEMS = [
   { href: "/tools/listing-description", label: "Listing Description Generator" },
   { href: "/tools/outreach-script", label: "FSBO Outreach Script Generator" },
   { href: "/tools/objection-response", label: "Objection Response Assistant" },
+  { href: "/tools/ce-tracker-realestate", label: "CE Tracker (Real Estate)" },
   { href: "/tools/inspection-comments", label: "Inspection Report Comment Library" },
   { href: "/tools/report-assistant", label: "AI Report Assistant" },
   { href: "/tools/business-builder-checklist", label: "Business Builder Checklist" },
@@ -15,6 +16,8 @@ const NAV_ITEMS = [
   { href: "/tools/review-templates", label: "Review Generation Templates" },
   { href: "/tools/agent-broker-kit", label: "Agent & Broker Relationship Kit" },
   { href: "/tools/social-posts", label: "Social Media Post Generator" },
+  { href: "/tools/ce-tracker-home-inspector", label: "CE Tracker (Home Inspector)" },
+  { href: "/tools/ce-tracker-appraiser", label: "CE Tracker (Appraiser)" },
 ];
 
 export function Header() {

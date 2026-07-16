@@ -10,6 +10,7 @@ import {
   StarIcon,
   HandshakeIcon,
   MegaphoneIcon,
+  GraduationCapIcon,
 } from "@/components/icons";
 import { PanelLabel } from "@/components/PanelLabel";
 
@@ -35,6 +36,12 @@ const TOOL_CATEGORIES = [
         title: "Objection Response Assistant",
         description: "Turn a FSBO seller's objection into a natural, ready-to-say response, with coaching notes.",
         Icon: ChatIcon,
+      },
+      {
+        href: "/tools/ce-tracker-realestate",
+        title: "CE Tracker",
+        description: "Track continuing-education hours toward New York's 22.5-hour renewal requirement, including topic minimums and your renewal deadline.",
+        Icon: GraduationCapIcon,
       },
     ],
   },
@@ -83,6 +90,24 @@ const TOOL_CATEGORIES = [
         title: "Social Media Post Generator",
         description: "Turn one topic prompt into a full week of ready-to-post content across platforms.",
         Icon: MegaphoneIcon,
+      },
+      {
+        href: "/tools/ce-tracker-home-inspector",
+        title: "CE Tracker",
+        description: "Track continuing-education hours toward New York's 24-hour renewal requirement and watch your renewal deadline.",
+        Icon: GraduationCapIcon,
+      },
+    ],
+  },
+  {
+    id: "appraiser",
+    label: "Real Estate Appraiser",
+    tools: [
+      {
+        href: "/tools/ce-tracker-appraiser",
+        title: "CE Tracker",
+        description: "Track continuing-education hours toward New York's 28-hour renewal requirement, including USPAP and Valuation Bias & Fair Housing.",
+        Icon: GraduationCapIcon,
       },
     ],
   },

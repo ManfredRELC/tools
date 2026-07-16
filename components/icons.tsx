@@ -96,6 +96,16 @@ export function MegaphoneIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
+export function GraduationCapIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" {...props}>
+      <path d="M2 9.5 12 5l10 4.5-10 4.5-10-4.5Z" strokeLinejoin="round" />
+      <path d="M6 11.5v4.5c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5v-4.5" strokeLinejoin="round" />
+      <path d="M21 9.5v6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export function MicIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" {...props}>
