@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { describeFloodZone } from "@/lib/propertyLookup/floodZones";
-import { CensusTractResult, FloodZoneResult, PropertyLookupResult } from "@/lib/propertyLookup/types";
+import { CensusTractResult, PropertyLookupResult } from "@/lib/propertyLookup/types";
 import { checkRateLimit } from "@/lib/rateLimit";
 import { getSessionValue } from "@/lib/auth";
 
@@ -49,106 +48,6 @@ async function geocodeAddress(address: string): Promise<CensusTractResult | null
   };
 }
 
-// Layer 28 of FEMA's public NFHL MapServer is "Flood Hazard Zones" (S_Fld_Haz_Ar).
-// TEMPORARY: multiple candidate hosts/paths are documented across FEMA's own
-// site and third-party references. Trying them in order until confirmed --
-// then this collapses back down to a single hardcoded base.
-const FEMA_CANDIDATE_BASES = [
-  "https://hazards.fema.gov/gis/nfhl/rest/services/public/NFHL/MapServer",
-  "https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer",
-  "https://msc.fema.gov/arcgis/rest/services/public/NFHL/MapServer",
-];
-const FEMA_FLOOD_ZONE_LAYER_ID = 28;
-
-interface FemaFeature {
-  attributes?: Record<string, unknown>;
-}
-
-// Using the layer's own "query" operation (a direct spatial attribute
-// lookup) rather than the MapServer-level "identify" operation, which is
-// built for interactive map-click UIs and depends on pixel-tolerance/
-// imageDisplay math that isn't relevant here and was returning empty.
-async function tryFemaQuery(
-  base: string,
-  lat: number,
-  lon: number
-): Promise<{ ok: true; features: FemaFeature[] } | { ok: false; detail: string }> {
-  const buffer = 0.0004; // ~35m, forgiving of geocoder/parcel-boundary precision
-  const envelope = `${lon - buffer},${lat - buffer},${lon + buffer},${lat + buffer}`;
-  const url =
-    `${base}/${FEMA_FLOOD_ZONE_LAYER_ID}/query` +
-    `?geometry=${envelope}&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects` +
-    `&outFields=FLD_ZONE,ZONE_SUBTY,SFHA_TF&returnGeometry=false&f=json`;
-
-  try {
-    const res = await fetch(url, {
-      headers: {
-        Accept: "application/json",
-        "User-Agent": "Mozilla/5.0 (compatible; ManfredSMARTBoard/1.0; +https://tools.manfredrelc.com)",
-      },
-    });
-    const text = await res.text();
-    if (!res.ok) return { ok: false, detail: `${base} -> HTTP ${res.status}: ${text.slice(0, 200)}` };
-
-    let data: { error?: unknown; features?: FemaFeature[] };
-    try {
-      data = JSON.parse(text);
-    } catch {
-      return { ok: false, detail: `${base} -> non-JSON response: ${text.slice(0, 200)}` };
-    }
-    if (data?.error) return { ok: false, detail: `${base} -> ArcGIS error: ${JSON.stringify(data.error).slice(0, 200)}` };
-
-    return { ok: true, features: data.features ?? [] };
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
-    return { ok: false, detail: `${base} -> fetch threw: ${msg}` };
-  }
-}
-
-async function lookupFloodZone(lat: number, lon: number): Promise<FloodZoneResult> {
-  const attempts: string[] = [];
-
-  for (const base of FEMA_CANDIDATE_BASES) {
-    const attempt = await tryFemaQuery(base, lat, lon);
-    if (attempt.ok) {
-      const attrs = attempt.features[0]?.attributes;
-
-      if (attrs && Object.keys(attrs).length > 0) {
-        const zone = (attrs.FLD_ZONE as string | undefined) ?? null;
-        const subtype = (attrs.ZONE_SUBTY as string | undefined) ?? null;
-        const sfhaRaw = attrs.SFHA_TF as string | undefined;
-        const isSFHA = sfhaRaw === "T" ? true : sfhaRaw === "F" ? false : null;
-        return { zone, subtype, isSFHA, ...describeFloodZone(zone, subtype) };
-      }
-
-      // TEMPORARY: request succeeded but no feature intersected the envelope.
-      return {
-        zone: null,
-        subtype: null,
-        isSFHA: null,
-        riskLevel: "undetermined",
-        label: "No Data Returned",
-        description: `[debug] ${base} responded OK but returned ${attempt.features.length} features for this point.`,
-        unavailable: true,
-      };
-    }
-    attempts.push(attempt.detail);
-  }
-
-  console.error("FEMA flood zone lookup failed for all candidate hosts", attempts);
-  return {
-    zone: null,
-    subtype: null,
-    isSFHA: null,
-    riskLevel: "undetermined",
-    label: "Lookup Unavailable",
-    // TEMPORARY: surfacing every candidate's failure reason on-page, since
-    // this environment has no access to Vercel's logs. Remove once fixed.
-    description: `FEMA's flood map service could not be reached. [debug: ${attempts.join(" || ").slice(0, 600)}]`,
-    unavailable: true,
-  };
-}
-
 export async function POST(request: NextRequest) {
   const sessionValue = await getSessionValue();
   const rateLimitKey = sessionValue ?? request.headers.get("x-forwarded-for") ?? "anonymous";
@@ -190,8 +89,6 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const flood = await lookupFloodZone(census.lat, census.lon);
-
-  const payload: PropertyLookupResult = { census, flood };
+  const payload: PropertyLookupResult = { census };
   return NextResponse.json(payload);
 }

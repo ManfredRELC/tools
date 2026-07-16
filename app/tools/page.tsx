@@ -113,7 +113,7 @@ const TOOL_CATEGORIES = [
       {
         href: "/tools/property-lookup",
         title: "Property Lookup",
-        description: "Look up a property's Census tract and FEMA flood zone designation from a single address search.",
+        description: "Look up a property's Census tract, plus a one-click link to FEMA's official flood map for that address.",
         Icon: MapPinIcon,
       },
     ],

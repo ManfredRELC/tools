@@ -8,19 +8,6 @@ export interface CensusTractResult {
   state: string | null;
 }
 
-export type FloodRiskLevel = "high" | "moderate" | "minimal" | "undetermined";
-
-export interface FloodZoneResult {
-  zone: string | null;
-  subtype: string | null;
-  isSFHA: boolean | null;
-  riskLevel: FloodRiskLevel;
-  label: string;
-  description: string;
-  unavailable?: boolean;
-}
-
 export interface PropertyLookupResult {
   census: CensusTractResult;
-  flood: FloodZoneResult;
 }

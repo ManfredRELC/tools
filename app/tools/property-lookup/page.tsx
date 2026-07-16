@@ -41,6 +41,10 @@ export default function PropertyLookupPage() {
     }
   }
 
+  const femaSearchUrl = result
+    ? `https://msc.fema.gov/portal/search?AddressQuery=${encodeURIComponent(result.census.matchedAddress)}`
+    : null;
+
   return (
     <div className="wrap">
       <header>
@@ -48,17 +52,17 @@ export default function PropertyLookupPage() {
           <p className="brand-eyebrow">Appraiser SMART Board · Tool</p>
           <h1>Property Lookup</h1>
           <p className="sub">
-            Enter an address to pull its Census tract (via the U.S. Census Bureau geocoder) and
-            its FEMA flood zone designation (via the National Flood Hazard Layer) in one search.
+            Enter an address to pull its Census tract (via the U.S. Census Bureau geocoder), plus
+            a direct link to FEMA&apos;s official Flood Map Service Center pre-filled with that
+            address.
           </p>
         </div>
       </header>
 
       <div className="fixed-tone-note" style={{ marginBottom: 22 }}>
         This is a convenience lookup, not a system of record. For lending, insurance, or any
-        regulatory purpose, verify the flood zone directly on FEMA&apos;s Flood Map Service Center
-        (msc.fema.gov) and confirm the tract against the Census Bureau&apos;s own geocoder before
-        relying on either result.
+        regulatory purpose, confirm the tract against the Census Bureau&apos;s own geocoder and
+        get the flood zone determination directly from FEMA&apos;s Flood Map Service Center.
       </div>
 
       <div className="panel form-panel" style={{ marginBottom: 22 }}>
@@ -81,7 +85,7 @@ export default function PropertyLookupPage() {
 
       <div className="panel output-panel">
         {loading ? (
-          <LoadingState text="LOOKING UP CENSUS TRACT AND FLOOD ZONE…" />
+          <LoadingState text="LOOKING UP CENSUS TRACT…" />
         ) : error && !result ? (
           <EmptyState tone="error" title="Something went wrong" desc="Could not complete the lookup right now. Try again in a moment." />
         ) : result ? (
@@ -105,16 +109,19 @@ export default function PropertyLookupPage() {
 
               <div className="property-result-card">
                 <div className="property-result-label">FEMA Flood Zone</div>
-                <span className={`property-risk-badge ${result.flood.riskLevel}`}>{result.flood.label}</span>
-                <div className="property-result-value">{result.flood.zone ?? "—"}</div>
-                <div className="property-result-desc">{result.flood.description}</div>
-                {result.flood.isSFHA !== null ? (
-                  <div className="property-result-sub" style={{ marginTop: 8 }}>
-                    {result.flood.isSFHA
-                      ? "Within a Special Flood Hazard Area (SFHA)"
-                      : "Not within a Special Flood Hazard Area (SFHA)"}
-                  </div>
-                ) : null}
+                <p className="property-result-desc" style={{ marginBottom: 14 }}>
+                  Flood zone determinations come directly from FEMA&apos;s own Flood Map Service
+                  Center, pre-filled with the matched address below.
+                </p>
+                <a
+                  className="generate-btn"
+                  href={femaSearchUrl ?? undefined}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ textDecoration: "none" }}
+                >
+                  Check FEMA&apos;s Flood Map ↗
+                </a>
               </div>
             </div>
           </>
