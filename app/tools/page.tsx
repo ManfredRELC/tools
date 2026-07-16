@@ -14,6 +14,7 @@ import {
   MapPinIcon,
   CalculatorIcon,
   ParcelIcon,
+  RoadIcon,
 } from "@/components/icons";
 import { PanelLabel } from "@/components/PanelLabel";
 
@@ -129,6 +130,12 @@ const TOOL_CATEGORIES = [
         title: "Parcel Search",
         description: "Pull lot and tax record data from NYC's PLUTO dataset or New York State's public tax parcel service.",
         Icon: ParcelIcon,
+      },
+      {
+        href: "/tools/mileage-expense-tracker",
+        title: "Mileage & Expense Tracker",
+        description: "Log business mileage and job-related expenses with a running deduction total, ready for tax time.",
+        Icon: RoadIcon,
       },
     ],
   },

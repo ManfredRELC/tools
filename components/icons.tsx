@@ -135,6 +135,16 @@ export function ParcelIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
+export function RoadIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" {...props}>
+      <path d="M9.5 3 4 21" strokeLinecap="round" />
+      <path d="M14.5 3 20 21" strokeLinecap="round" />
+      <path d="M12 5.5v3M12 11v3M12 16.5v3" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export function MicIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" {...props}>
