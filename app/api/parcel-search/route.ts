@@ -111,17 +111,46 @@ function addressSearchPrefix(matchedAddress: string): string {
     .join(" ");
 }
 
-async function queryPluto(matchedAddress: string, borough: string): Promise<ParcelResult | null> {
-  const prefix = addressSearchPrefix(matchedAddress).replace(/'/g, "''");
-  const where = `upper(address) like upper('${prefix}%') AND borough='${borough}'`;
-  const url = `${PLUTO_RESOURCE_URL}?$where=${encodeURIComponent(where)}&$limit=1`;
-
+async function fetchPlutoRows(where: string, limit: number): Promise<Record<string, unknown>[]> {
+  const url = `${PLUTO_RESOURCE_URL}?$where=${encodeURIComponent(where)}&$limit=${limit}`;
   const res = await fetch(url, { headers: FETCH_HEADERS });
   if (!res.ok) throw new Error(`NYC PLUTO service returned ${res.status}`);
   const data = await res.json();
-  if (!Array.isArray(data) || data.length === 0) return null;
+  return Array.isArray(data) ? data : [];
+}
 
-  const attrs: Record<string, unknown> = data[0];
+async function queryPluto(matchedAddress: string, borough: string): Promise<ParcelResult | null> {
+  const prefix = addressSearchPrefix(matchedAddress).replace(/'/g, "''");
+  const primaryWhere = `upper(address) like upper('${prefix}%') AND borough='${borough}'`;
+  let rows = await fetchPlutoRows(primaryWhere, 1);
+  let usedFallback = false;
+
+  const houseNumber = extractHouseNumber(matchedAddress.split(",")[0] ?? "");
+
+  if (rows.length === 0 && houseNumber) {
+    // The exact street-name prefix didn't match -- PLUTO's own spelling
+    // conventions for street names aren't fully predictable (numbered vs.
+    // spelled-out avenues, abbreviations, etc.). Fall back to a
+    // house-number-only filter within the same borough, which makes no
+    // assumption about street-name spelling, so real data still surfaces.
+    const fallbackWhere = `starts_with(address, '${houseNumber.replace(/'/g, "''")}') AND borough='${borough}'`;
+    rows = await fetchPlutoRows(fallbackWhere, 5);
+    usedFallback = true;
+  }
+
+  if (rows.length === 0 && houseNumber) {
+    // Even the borough-scoped house-number search came up empty -- the
+    // borough code convention might not be what we assumed. Drop the
+    // borough filter entirely as a last diagnostic pass; the "show all raw
+    // fields" toggle will reveal the real borough value if this succeeds.
+    const diagnosticWhere = `starts_with(address, '${houseNumber.replace(/'/g, "''")}')`;
+    rows = await fetchPlutoRows(diagnosticWhere, 5);
+    usedFallback = true;
+  }
+
+  if (rows.length === 0) return null;
+
+  const attrs: Record<string, unknown> = rows[0];
   const fields = [
     pickField(attrs, ["bbl"], "BBL"),
     pickField(attrs, ["address"], "Address"),
@@ -135,7 +164,20 @@ async function queryPluto(matchedAddress: string, borough: string): Promise<Parc
     pickField(attrs, ["ownername"], "Owner of Record"),
   ].filter((f): f is ParcelField => f !== null);
 
-  return { source: "nyc-pluto", sourceName: "NYC PLUTO", fields, rawAttributes: attrs };
+  let addressMismatchWarning: string | undefined;
+  if (usedFallback) {
+    const otherAddresses = rows
+      .slice(1)
+      .map((r) => r.address)
+      .filter(Boolean);
+    addressMismatchWarning = otherAddresses.length
+      ? `Matched by house number only (the exact street spelling didn't line up) -- other properties with the same house number in this borough include: ${otherAddresses.join(
+          ", "
+        )}. Verify this is the right one.`
+      : "Matched by house number only (the exact street spelling didn't line up) -- verify this is the right property.";
+  }
+
+  return { source: "nyc-pluto", sourceName: "NYC PLUTO", fields, rawAttributes: attrs, addressMismatchWarning };
 }
 
 export async function POST(request: NextRequest) {
