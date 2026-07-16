@@ -1,12 +1,6 @@
-export interface CensusTractResult {
-  matchedAddress: string;
-  lat: number;
-  lon: number;
-  tractGeoid: string | null;
-  tractName: string | null;
-  county: string | null;
-  state: string | null;
-}
+import { CensusGeocodeResult } from "@/lib/geocode/census";
+
+export type CensusTractResult = CensusGeocodeResult;
 
 export interface PropertyLookupResult {
   census: CensusTractResult;

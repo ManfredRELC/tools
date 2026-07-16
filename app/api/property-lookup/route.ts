@@ -1,51 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
+import { geocodeAddress } from "@/lib/geocode/census";
 import { CensusTractResult, PropertyLookupResult } from "@/lib/propertyLookup/types";
 import { checkRateLimit } from "@/lib/rateLimit";
 import { getSessionValue } from "@/lib/auth";
 
 interface RequestBody {
   address?: string;
-}
-
-interface CensusGeography {
-  GEOID?: string;
-  NAME?: string;
-}
-
-interface CensusAddressMatch {
-  matchedAddress: string;
-  coordinates: { x: number; y: number };
-  geographies?: {
-    "Census Tracts"?: CensusGeography[];
-    Counties?: CensusGeography[];
-    States?: CensusGeography[];
-  };
-}
-
-async function geocodeAddress(address: string): Promise<CensusTractResult | null> {
-  const url = `https://geocoding.geo.census.gov/geocoder/geographies/onelineaddress?address=${encodeURIComponent(
-    address
-  )}&benchmark=Public_AR_Current&vintage=Current_Current&format=json`;
-
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Census geocoder returned ${res.status}`);
-  const data = await res.json();
-  const match: CensusAddressMatch | undefined = data?.result?.addressMatches?.[0];
-  if (!match) return null;
-
-  const tract = match.geographies?.["Census Tracts"]?.[0];
-  const county = match.geographies?.Counties?.[0];
-  const state = match.geographies?.States?.[0];
-
-  return {
-    matchedAddress: match.matchedAddress,
-    lat: match.coordinates.y,
-    lon: match.coordinates.x,
-    tractGeoid: tract?.GEOID ?? null,
-    tractName: tract?.NAME ?? null,
-    county: county?.NAME ?? null,
-    state: state?.NAME ?? null,
-  };
 }
 
 export async function POST(request: NextRequest) {
