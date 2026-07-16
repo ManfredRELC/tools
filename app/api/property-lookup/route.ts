@@ -49,20 +49,36 @@ async function geocodeAddress(address: string): Promise<CensusTractResult | null
   };
 }
 
+// Layer 28 of FEMA's public NFHL MapServer is "Flood Hazard Zones" (S_Fld_Haz_Ar).
+// Note: the correct host path is /gis/nfhl/rest/services/... -- the more commonly
+// referenced /arcgis/rest/services/... path for this same hostname 404s.
+const FEMA_NFHL_BASE = "https://hazards.fema.gov/gis/nfhl/rest/services/public/NFHL/MapServer";
+const FEMA_FLOOD_ZONE_LAYER_ID = 28;
+
 async function lookupFloodZone(lat: number, lon: number): Promise<FloodZoneResult> {
   const buffer = 0.001;
   const mapExtent = `${lon - buffer},${lat - buffer},${lon + buffer},${lat + buffer}`;
   const url =
-    `https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer/identify` +
-    `?geometry=${lon},${lat}&geometryType=esriGeometryPoint&sr=4326&layers=all` +
+    `${FEMA_NFHL_BASE}/identify` +
+    `?geometry=${lon},${lat}&geometryType=esriGeometryPoint&sr=4326&layers=all:${FEMA_FLOOD_ZONE_LAYER_ID}` +
     `&tolerance=2&mapExtent=${mapExtent}&imageDisplay=600,550,96&returnGeometry=false&f=json`;
 
   try {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`FEMA NFHL returned ${res.status}`);
+    const res = await fetch(url, {
+      headers: {
+        Accept: "application/json",
+        "User-Agent": "Mozilla/5.0 (compatible; ManfredSMARTBoard/1.0; +https://tools.manfredrelc.com)",
+      },
+    });
+    if (!res.ok) {
+      const bodySnippet = (await res.text().catch(() => "")).slice(0, 300);
+      throw new Error(`FEMA NFHL returned ${res.status}: ${bodySnippet}`);
+    }
     const data = await res.json();
-    const results: Array<{ layerName?: string; attributes?: Record<string, unknown> }> = data?.results ?? [];
-    const floodLayer = results.find((r) => /flood hazard zone/i.test(r.layerName ?? ""));
+    const results: Array<{ layerId?: number; layerName?: string; attributes?: Record<string, unknown> }> = data?.results ?? [];
+    const floodLayer =
+      results.find((r) => r.layerId === FEMA_FLOOD_ZONE_LAYER_ID) ??
+      results.find((r) => /flood hazard zone/i.test(r.layerName ?? ""));
     const attrs = floodLayer?.attributes;
 
     const zone = (attrs?.FLD_ZONE as string | undefined) ?? null;
