@@ -43,6 +43,59 @@ export function WandIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
+export function ChecklistIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" {...props}>
+      <rect x="4" y="3.5" width="16" height="17" rx="1.5" />
+      <path d="m7.5 8 1.3 1.3L11 7" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M13.5 8h4" strokeLinecap="round" />
+      <path d="m7.5 13.5 1.3 1.3 2.2-2.3" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M13.5 13.5h4" strokeLinecap="round" />
+      <path d="M7.5 18.5h10" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function GlobeIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" {...props}>
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="M3.5 12h17M12 3.5c2.4 2.3 3.6 5.2 3.6 8.5s-1.2 6.2-3.6 8.5c-2.4-2.3-3.6-5.2-3.6-8.5S9.6 5.8 12 3.5Z" />
+    </svg>
+  );
+}
+
+export function StarIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" {...props}>
+      <path
+        d="M12 3.5 14.6 9l6.1.9-4.4 4.3 1 6-5.3-2.8-5.3 2.8 1-6-4.4-4.3 6.1-.9L12 3.5Z"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+export function HandshakeIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" {...props}>
+      <path d="M2 11.5 6 8l3.5 3-1.4 1.4a1.4 1.4 0 0 0 2 2L14 10.5l4 3.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="m18 8 4 3.5-4.5 5-3-2.6" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="m8.5 15 2 1.8a1.5 1.5 0 0 0 2.1-2.1" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function MegaphoneIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" {...props}>
+      <path d="M3 10v4a1 1 0 0 0 1 1h2l1.5 5H9l-.8-5H8" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M6 10 17 5v14L6 14V10Z" strokeLinejoin="round" />
+      <path d="M17 8.5a3 3 0 0 1 0 7" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export function MicIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" {...props}>

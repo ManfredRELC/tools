@@ -1,5 +1,16 @@
 import Link from "next/link";
-import { HomeIcon, PhoneIcon, ChatIcon, ClipboardCheckIcon, WandIcon } from "@/components/icons";
+import {
+  HomeIcon,
+  PhoneIcon,
+  ChatIcon,
+  ClipboardCheckIcon,
+  WandIcon,
+  ChecklistIcon,
+  GlobeIcon,
+  StarIcon,
+  HandshakeIcon,
+  MegaphoneIcon,
+} from "@/components/icons";
 import { PanelLabel } from "@/components/PanelLabel";
 
 const TOOL_CATEGORIES = [
@@ -42,6 +53,36 @@ const TOOL_CATEGORIES = [
         title: "AI Report Assistant",
         description: "Turn rough field notes into a compliant, report-ready narrative, checked against NY's Standards of Practice as it writes.",
         Icon: WandIcon,
+      },
+      {
+        href: "/tools/business-builder-checklist",
+        title: "Business Builder Checklist",
+        description: "The part school doesn't teach: setting up and running the business side of home inspection.",
+        Icon: ChecklistIcon,
+      },
+      {
+        href: "/tools/gbp-checklist",
+        title: "Google Business Profile Checklist",
+        description: "Set up, optimize, and maintain the single highest-return marketing asset for a local inspection business.",
+        Icon: GlobeIcon,
+      },
+      {
+        href: "/tools/review-templates",
+        title: "Review Generation Templates",
+        description: "Ready-to-send templates for asking for reviews and responding to whatever comes back — good, mixed, or difficult.",
+        Icon: StarIcon,
+      },
+      {
+        href: "/tools/agent-broker-kit",
+        title: "Agent & Broker Relationship Kit",
+        description: "A bio generator plus ready-to-use templates for building the referral relationships that keep a book of business full.",
+        Icon: HandshakeIcon,
+      },
+      {
+        href: "/tools/social-posts",
+        title: "Social Media Post Generator",
+        description: "Turn one topic prompt into a full week of ready-to-post content across platforms.",
+        Icon: MegaphoneIcon,
       },
     ],
   },

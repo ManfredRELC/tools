@@ -10,6 +10,11 @@ const NAV_ITEMS = [
   { href: "/tools/objection-response", label: "Objection Response Assistant" },
   { href: "/tools/inspection-comments", label: "Inspection Report Comment Library" },
   { href: "/tools/report-assistant", label: "AI Report Assistant" },
+  { href: "/tools/business-builder-checklist", label: "Business Builder Checklist" },
+  { href: "/tools/gbp-checklist", label: "Google Business Profile Checklist" },
+  { href: "/tools/review-templates", label: "Review Generation Templates" },
+  { href: "/tools/agent-broker-kit", label: "Agent & Broker Relationship Kit" },
+  { href: "/tools/social-posts", label: "Social Media Post Generator" },
 ];
 
 export function Header() {
