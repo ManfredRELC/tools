@@ -51,8 +51,7 @@ async function geocodeAddress(address: string): Promise<CensusTractResult | null
 
 // Layer 28 of FEMA's public NFHL MapServer is "Flood Hazard Zones" (S_Fld_Haz_Ar).
 // TEMPORARY: multiple candidate hosts/paths are documented across FEMA's own
-// site and third-party references, and two of them 404 in production. Trying
-// them in order and surfacing which one actually works, until confirmed --
+// site and third-party references. Trying them in order until confirmed --
 // then this collapses back down to a single hardcoded base.
 const FEMA_CANDIDATE_BASES = [
   "https://hazards.fema.gov/gis/nfhl/rest/services/public/NFHL/MapServer",
@@ -61,28 +60,25 @@ const FEMA_CANDIDATE_BASES = [
 ];
 const FEMA_FLOOD_ZONE_LAYER_ID = 28;
 
-interface FemaIdentifyResult {
-  layerId?: number;
-  layerName?: string;
+interface FemaFeature {
   attributes?: Record<string, unknown>;
 }
 
-async function tryFemaIdentify(
+// Using the layer's own "query" operation (a direct spatial attribute
+// lookup) rather than the MapServer-level "identify" operation, which is
+// built for interactive map-click UIs and depends on pixel-tolerance/
+// imageDisplay math that isn't relevant here and was returning empty.
+async function tryFemaQuery(
   base: string,
   lat: number,
   lon: number
-): Promise<{ ok: true; results: FemaIdentifyResult[] } | { ok: false; detail: string }> {
-  // TEMPORARY: querying "all" layers unrestricted (rather than "all:28") so
-  // we can see every layer that actually intersects the point, since the
-  // layer-28 restriction was coming back empty for a reason not yet known --
-  // either the wrong id or a genuinely unmapped point. Also widened the
-  // tolerance/extent in case precision was the culprit.
-  const buffer = 0.01;
-  const mapExtent = `${lon - buffer},${lat - buffer},${lon + buffer},${lat + buffer}`;
+): Promise<{ ok: true; features: FemaFeature[] } | { ok: false; detail: string }> {
+  const buffer = 0.0004; // ~35m, forgiving of geocoder/parcel-boundary precision
+  const envelope = `${lon - buffer},${lat - buffer},${lon + buffer},${lat + buffer}`;
   const url =
-    `${base}/identify` +
-    `?geometry=${lon},${lat}&geometryType=esriGeometryPoint&sr=4326&layers=all` +
-    `&tolerance=10&mapExtent=${mapExtent}&imageDisplay=600,550,96&returnGeometry=false&f=json`;
+    `${base}/${FEMA_FLOOD_ZONE_LAYER_ID}/query` +
+    `?geometry=${envelope}&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects` +
+    `&outFields=FLD_ZONE,ZONE_SUBTY,SFHA_TF&returnGeometry=false&f=json`;
 
   try {
     const res = await fetch(url, {
@@ -94,7 +90,7 @@ async function tryFemaIdentify(
     const text = await res.text();
     if (!res.ok) return { ok: false, detail: `${base} -> HTTP ${res.status}: ${text.slice(0, 200)}` };
 
-    let data: { error?: unknown; results?: FemaIdentifyResult[] };
+    let data: { error?: unknown; features?: FemaFeature[] };
     try {
       data = JSON.parse(text);
     } catch {
@@ -102,7 +98,7 @@ async function tryFemaIdentify(
     }
     if (data?.error) return { ok: false, detail: `${base} -> ArcGIS error: ${JSON.stringify(data.error).slice(0, 200)}` };
 
-    return { ok: true, results: data.results ?? [] };
+    return { ok: true, features: data.features ?? [] };
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     return { ok: false, detail: `${base} -> fetch threw: ${msg}` };
@@ -113,12 +109,9 @@ async function lookupFloodZone(lat: number, lon: number): Promise<FloodZoneResul
   const attempts: string[] = [];
 
   for (const base of FEMA_CANDIDATE_BASES) {
-    const attempt = await tryFemaIdentify(base, lat, lon);
+    const attempt = await tryFemaQuery(base, lat, lon);
     if (attempt.ok) {
-      const floodLayer =
-        attempt.results.find((r) => r.layerId === FEMA_FLOOD_ZONE_LAYER_ID) ??
-        attempt.results.find((r) => /flood hazard zone/i.test(r.layerName ?? ""));
-      const attrs = floodLayer?.attributes;
+      const attrs = attempt.features[0]?.attributes;
 
       if (attrs && Object.keys(attrs).length > 0) {
         const zone = (attrs.FLD_ZONE as string | undefined) ?? null;
@@ -128,19 +121,14 @@ async function lookupFloodZone(lat: number, lon: number): Promise<FloodZoneResul
         return { zone, subtype, isSFHA, ...describeFloodZone(zone, subtype) };
       }
 
-      // TEMPORARY: the request succeeded but nothing matched our flood-layer
-      // filter -- surface every layer that DID intersect this point so we
-      // can tell a real "unmapped point" apart from a wrong layer id/name.
-      const layerSummary = attempt.results.length
-        ? attempt.results.map((r) => `${r.layerId}:${r.layerName}`).join(", ")
-        : "(zero layers intersected this point)";
+      // TEMPORARY: request succeeded but no feature intersected the envelope.
       return {
         zone: null,
         subtype: null,
         isSFHA: null,
         riskLevel: "undetermined",
         label: "No Data Returned",
-        description: `[debug] ${base} responded OK. Layers found here: ${layerSummary}`,
+        description: `[debug] ${base} responded OK but returned ${attempt.features.length} features for this point.`,
         unavailable: true,
       };
     }
