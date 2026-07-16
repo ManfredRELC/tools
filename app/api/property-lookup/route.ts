@@ -89,13 +89,16 @@ async function lookupFloodZone(lat: number, lon: number): Promise<FloodZoneResul
     return { zone, subtype, isSFHA, ...describeFloodZone(zone, subtype) };
   } catch (err) {
     console.error("FEMA flood zone lookup failed", err);
+    const debugDetail = err instanceof Error ? err.message : String(err);
     return {
       zone: null,
       subtype: null,
       isSFHA: null,
       riskLevel: "undetermined",
       label: "Lookup Unavailable",
-      description: "FEMA's flood map service could not be reached just now. Try again, or verify directly on FEMA's Flood Map Service Center.",
+      // TEMPORARY: surfacing the raw error on-page for debugging, since this
+      // environment has no access to Vercel's logs. Remove once fixed.
+      description: `FEMA's flood map service could not be reached just now. [debug: ${debugDetail.slice(0, 400)}]`,
       unavailable: true,
     };
   }
