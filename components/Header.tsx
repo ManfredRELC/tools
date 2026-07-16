@@ -20,6 +20,7 @@ const NAV_ITEMS = [
   { href: "/tools/ce-tracker-appraiser", label: "CE Tracker (Appraiser)" },
   { href: "/tools/property-lookup", label: "Property Lookup" },
   { href: "/tools/fee-calculator", label: "Fee Calculator" },
+  { href: "/tools/parcel-search", label: "Parcel Search" },
 ];
 
 export function Header() {

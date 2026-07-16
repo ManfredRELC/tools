@@ -13,6 +13,7 @@ import {
   GraduationCapIcon,
   MapPinIcon,
   CalculatorIcon,
+  ParcelIcon,
 } from "@/components/icons";
 import { PanelLabel } from "@/components/PanelLabel";
 
@@ -122,6 +123,12 @@ const TOOL_CATEGORIES = [
         title: "Fee Calculator",
         description: "Set your own rate card once, then get a live, itemized quote based on property type, size, complexity, and rush timing.",
         Icon: CalculatorIcon,
+      },
+      {
+        href: "/tools/parcel-search",
+        title: "Parcel Search",
+        description: "Pull lot and tax record data from NYC's PLUTO dataset or New York State's public tax parcel service.",
+        Icon: ParcelIcon,
       },
     ],
   },

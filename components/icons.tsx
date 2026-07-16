@@ -125,6 +125,16 @@ export function CalculatorIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
+export function ParcelIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" {...props}>
+      <path d="M4 9.5 12 4l8 5.5V19a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9.5Z" strokeLinejoin="round" />
+      <path d="M8 21v-6h8v6" strokeLinejoin="round" />
+      <path d="M4 12h16" strokeDasharray="2 2" />
+    </svg>
+  );
+}
+
 export function MicIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" {...props}>
