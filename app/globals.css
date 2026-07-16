@@ -773,3 +773,309 @@ textarea {
 .login-card .sub {
   margin-bottom: 22px;
 }
+
+/* ---------- Inspection Report Comment Library ---------- */
+/* Comment "type" needs five distinguishable categories (info/maintenance/
+   repair/safety/limitation). The official brand swatch only covers two hues
+   (navy, gold), so two additional utility tones are introduced here (info
+   blue, repair amber) -- scoped to this domain-specific classification only,
+   the same way --sage already exists outside the core brand palette for
+   success states. Maintenance reuses champagne/gold and safety reuses rust
+   so the two color families that already carry meaning elsewhere in the app
+   (brand gold, error rust) stay consistent here too. */
+.statute-cite {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--gold);
+  background: rgba(254, 254, 253, 0.08);
+  padding: 3px 9px;
+  border-radius: 6px;
+  flex: none;
+}
+
+.clause-block {
+  background: rgba(254, 254, 253, 0.06);
+  border: 1px solid rgba(254, 254, 253, 0.14);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--white);
+}
+
+.clause-block:last-of-type {
+  margin-bottom: 16px;
+}
+
+.clause-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 6px;
+}
+
+.library-layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 820px) {
+  .library-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.count-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  margin: 0 0 12px;
+}
+
+.library-empty {
+  color: var(--muted);
+  font-size: 13.5px;
+  font-style: italic;
+  padding: 20px 0;
+  text-align: center;
+}
+
+.comment-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  margin-bottom: 12px;
+}
+
+.comment-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.comment-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.comment-tag.system {
+  background: var(--paper);
+  color: var(--muted);
+  border: 1px solid var(--line);
+}
+
+.comment-tag.cite {
+  background: var(--champagne);
+  color: var(--navy-dark);
+}
+
+.comment-tag.type-info {
+  background: #e9eff4;
+  color: #3d5470;
+}
+
+.comment-tag.type-maint {
+  background: var(--champagne);
+  color: var(--navy-dark);
+}
+
+.comment-tag.type-repair {
+  background: #fbeee1;
+  color: #9a5a24;
+}
+
+.comment-tag.type-safety {
+  background: rgba(168, 72, 60, 0.1);
+  color: var(--rust);
+}
+
+.comment-tag.type-limit {
+  background: #eeeff0;
+  color: var(--muted);
+}
+
+.comment-card p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--navy-dark);
+}
+
+.comment-card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.comment-add-btn {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--navy-dark);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.comment-add-btn:hover {
+  border-color: var(--navy);
+}
+
+.comment-add-btn.added {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: var(--white);
+}
+
+.comment-add-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Type-filter chip active states (mirrors the tag colors above) */
+.tone-chip.type-chip-info.active {
+  background: #4c6b8a;
+  border-color: #4c6b8a;
+  color: var(--white);
+}
+
+.tone-chip.type-chip-maint.active {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--navy-dark);
+}
+
+.tone-chip.type-chip-repair.active {
+  background: #c97a3b;
+  border-color: #c97a3b;
+  color: var(--white);
+}
+
+.tone-chip.type-chip-safety.active {
+  background: var(--rust);
+  border-color: var(--rust);
+  color: var(--white);
+}
+
+.tone-chip.type-chip-limit.active {
+  background: var(--muted);
+  border-color: var(--muted);
+  color: var(--white);
+}
+
+.draft-tray {
+  position: sticky;
+  top: 20px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.draft-tray-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.draft-tray-head h3 {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  margin: 0;
+  font-weight: 600;
+  color: var(--navy-dark);
+}
+
+.draft-tray-count {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--navy-dark);
+  font-weight: 600;
+  background: var(--champagne);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.draft-tray-sub {
+  font-size: 11.5px;
+  color: var(--muted);
+  margin: 0 0 12px;
+}
+
+.draft-list {
+  overflow-y: auto;
+  flex: 1;
+  margin-bottom: 12px;
+  padding-right: 2px;
+}
+
+.draft-item {
+  font-size: 12.5px;
+  line-height: 1.4;
+  padding: 9px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  position: relative;
+  background: var(--paper);
+  color: var(--navy-dark);
+}
+
+.draft-item-remove {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.draft-item-remove:hover {
+  color: var(--rust);
+}
+
+.draft-empty {
+  font-size: 12.5px;
+  color: var(--muted);
+  font-style: italic;
+  padding: 14px 0;
+  text-align: center;
+  margin: 0;
+}
+
+.draft-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.draft-actions > * {
+  flex: 1;
+  text-align: center;
+}
