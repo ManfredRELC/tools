@@ -19,4 +19,5 @@ export interface ParcelSearchResult {
   census: CensusGeocodeResult;
   parcel: ParcelResult | null;
   parcelError: string | null;
+  sourceAttempted: ParcelSource;
 }
