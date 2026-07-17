@@ -114,36 +114,20 @@ async function fetchPlutoRows(where: string, limit: number): Promise<Record<stri
 
 async function queryPluto(matchedAddress: string, borough: string): Promise<ParcelResult | null> {
   const [houseNumberWord, streetWord] = streetWords(matchedAddress);
-  const houseNumber = extractHouseNumber(matchedAddress.split(",")[0] ?? "");
+  if (!houseNumberWord || !streetWord) return null;
 
-  let rows: Record<string, unknown>[] = [];
-  let usedFallback = false;
-
-  if (houseNumberWord && streetWord) {
-    // PLUTO's per-record street-name formatting isn't fully consistent
-    // (some numbered streets keep the ordinal suffix, some drop it), so try
-    // both variants in one query rather than guessing a single convention.
-    const asWritten = `${houseNumberWord} ${streetWord}`.replace(/'/g, "''");
-    const stripped = `${houseNumberWord} ${stripOrdinalSuffix(streetWord)}`.replace(/'/g, "''");
-    const variants =
-      asWritten === stripped
-        ? [asWritten]
-        : [asWritten, stripped];
-    const prefixClauses = variants.map((v) => `upper(address) like upper('${v}%')`).join(" OR ");
-    const primaryWhere = `(${prefixClauses}) AND borough='${borough}'`;
-    rows = await fetchPlutoRows(primaryWhere, 1);
-  }
-
-  if (rows.length === 0 && houseNumber) {
-    // Still no match -- fall back to a house-number-only filter within the
-    // same borough. This is scoped enough to stay meaningful (unlike
-    // dropping the borough filter too, which risks matching a same-numbered
-    // building on a completely different street) and is always flagged as
-    // a fallback so it's never presented as a confident exact match.
-    const fallbackWhere = `starts_with(address, '${houseNumber.replace(/'/g, "''")}') AND borough='${borough}'`;
-    rows = await fetchPlutoRows(fallbackWhere, 5);
-    usedFallback = true;
-  }
+  // PLUTO's per-record street-name formatting isn't fully consistent (some
+  // numbered streets keep the ordinal suffix, some drop it), so try both
+  // variants in one query. Deliberately scoped to house number AND street --
+  // a house-number-only match was tried previously and twice returned a
+  // real but wrong building sharing only the house number (a different
+  // avenue, a different street entirely), which is worse than no match.
+  const asWritten = `${houseNumberWord} ${streetWord}`.replace(/'/g, "''");
+  const stripped = `${houseNumberWord} ${stripOrdinalSuffix(streetWord)}`.replace(/'/g, "''");
+  const variants = asWritten === stripped ? [asWritten] : [asWritten, stripped];
+  const prefixClauses = variants.map((v) => `upper(address) like upper('${v}%')`).join(" OR ");
+  const where = `(${prefixClauses}) AND borough='${borough}'`;
+  const rows = await fetchPlutoRows(where, 1);
 
   if (rows.length === 0) return null;
 
@@ -161,20 +145,7 @@ async function queryPluto(matchedAddress: string, borough: string): Promise<Parc
     pickField(attrs, ["ownername"], "Owner of Record"),
   ].filter((f): f is ParcelField => f !== null);
 
-  let addressMismatchWarning: string | undefined;
-  if (usedFallback) {
-    const otherAddresses = rows
-      .slice(1)
-      .map((r) => r.address)
-      .filter(Boolean);
-    addressMismatchWarning = otherAddresses.length
-      ? `Matched by house number only (the exact street spelling didn't line up) -- other properties with the same house number in this borough include: ${otherAddresses.join(
-          ", "
-        )}. Verify this is the right one.`
-      : "Matched by house number only (the exact street spelling didn't line up) -- verify this is the right property.";
-  }
-
-  return { source: "nyc-pluto", sourceName: "NYC PLUTO", fields, rawAttributes: attrs, addressMismatchWarning };
+  return { source: "nyc-pluto", sourceName: "NYC PLUTO", fields, rawAttributes: attrs };
 }
 
 export async function POST(request: NextRequest) {

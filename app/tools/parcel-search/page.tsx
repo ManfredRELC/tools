@@ -126,10 +126,22 @@ export default function ParcelSearchPage() {
                 ) : null}
               </>
             ) : result.sourceAttempted === "nyc-pluto" ? (
-              <EmptyState
-                title="No parcel record found"
-                desc="Couldn't find a confident match in NYC's PLUTO dataset for this address. Double-check the address, or try NYC's own Property Information Portal directly."
-              />
+              <>
+                <EmptyState
+                  title="No parcel record found"
+                  desc="Couldn't find a confident match in NYC's PLUTO dataset for this address. Double-check the address, or look it up directly on NYC's own Property Information Portal."
+                />
+                <div style={{ display: "flex", justifyContent: "center", marginTop: -12 }}>
+                  <a
+                    className="comment-add-btn"
+                    href="https://propertyinformationportal.nyc.gov/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Open NYC Property Information Portal ↗
+                  </a>
+                </div>
+              </>
             ) : (
               <EmptyState
                 title="No parcel record found"
