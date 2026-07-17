@@ -22,6 +22,7 @@ const NAV_ITEMS = [
   { href: "/tools/fee-calculator", label: "Fee Calculator" },
   { href: "/tools/parcel-search", label: "Parcel Search" },
   { href: "/tools/mileage-expense-tracker", label: "Mileage & Expense Tracker" },
+  { href: "/tools/open-house-kit", label: "Open House Kit" },
 ];
 
 export function Header() {

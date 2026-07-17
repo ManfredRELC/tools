@@ -15,6 +15,7 @@ import {
   CalculatorIcon,
   ParcelIcon,
   RoadIcon,
+  ClipboardListIcon,
 } from "@/components/icons";
 import { PanelLabel } from "@/components/PanelLabel";
 
@@ -46,6 +47,12 @@ const TOOL_CATEGORIES = [
         title: "CE Tracker",
         description: "Track continuing-education hours toward New York's 22.5-hour renewal requirement, including topic minimums and your renewal deadline.",
         Icon: GraduationCapIcon,
+      },
+      {
+        href: "/tools/open-house-kit",
+        title: "Open House Kit",
+        description: "A printable sign-in sheet for the door, plus a staged follow-up email sequence for every lead you collect.",
+        Icon: ClipboardListIcon,
       },
     ],
   },
