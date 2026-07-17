@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { CONTACT_METHODS, ContactMethod, OUTREACH_TONES, OutreachTone, OUTREACH_FIELDS } from "@/lib/outreachFields";
+import { CONTACT_METHODS, ContactMethod, OUTREACH_TONES, OutreachTone, getOutreachFields } from "@/lib/outreachFields";
+import { LEAD_TYPES, LeadType } from "@/lib/leadTypes";
 import { FieldInput } from "@/components/FieldInput";
 import { PanelLabel } from "@/components/PanelLabel";
 import { EmptyState } from "@/components/EmptyState";
@@ -9,12 +10,15 @@ import { LoadingState } from "@/components/LoadingState";
 import { CopyButton } from "@/components/CopyButton";
 
 export default function OutreachScriptPage() {
+  const [leadType, setLeadType] = useState<LeadType>(LEAD_TYPES[0]);
   const [method, setMethod] = useState<ContactMethod>(CONTACT_METHODS[0]);
   const [tone, setTone] = useState<OutreachTone>(OUTREACH_TONES[0]);
   const [fields, setFields] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [script, setScript] = useState<string | null>(null);
+
+  const outreachFields = getOutreachFields(leadType);
 
   function handleFieldChange(key: string, value: string) {
     setFields((prev) => ({ ...prev, [key]: value }));
@@ -35,7 +39,7 @@ export default function OutreachScriptPage() {
       const res = await fetch("/api/outreach-script", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ method, tone, fields }),
+        body: JSON.stringify({ method, tone, leadType, fields }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -55,9 +59,10 @@ export default function OutreachScriptPage() {
       <header>
         <div>
           <p className="brand-eyebrow">Manfred Real Estate Learning Center — Membership Plus Tool</p>
-          <h1>FSBO Outreach Script Generator</h1>
+          <h1>FSBO &amp; Expired Listing Outreach Script Generator</h1>
           <p className="sub">
-            Build a natural-sounding call, text, door-knock, or email script for a specific FSBO lead.
+            Build a natural-sounding call, text, door-knock, or email script for a specific FSBO or
+            expired-listing lead.
           </p>
         </div>
         <div className="rider">
@@ -67,6 +72,27 @@ export default function OutreachScriptPage() {
 
       <div className="grid">
         <div className="panel form-panel">
+          <PanelLabel>Lead Type</PanelLabel>
+          <div className="tone-select" style={{ marginBottom: 20 }}>
+            {LEAD_TYPES.map((lt) => (
+              <div
+                key={lt}
+                className={`tone-chip${lt === leadType ? " active" : ""}`}
+                onClick={() => setLeadType(lt)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setLeadType(lt);
+                  }
+                }}
+              >
+                {lt}
+              </div>
+            ))}
+          </div>
+
           <PanelLabel>Contact Method</PanelLabel>
           <div className="tone-select" style={{ marginBottom: 20 }}>
             {CONTACT_METHODS.map((m) => (
@@ -92,31 +118,31 @@ export default function OutreachScriptPage() {
 
           <div className="row2">
             <FieldInput
-              field={OUTREACH_FIELDS[0]}
-              value={fields[OUTREACH_FIELDS[0].key] ?? ""}
+              field={outreachFields[0]}
+              value={fields[outreachFields[0].key] ?? ""}
               onChange={handleFieldChange}
             />
             <FieldInput
-              field={OUTREACH_FIELDS[1]}
-              value={fields[OUTREACH_FIELDS[1].key] ?? ""}
+              field={outreachFields[1]}
+              value={fields[outreachFields[1].key] ?? ""}
               onChange={handleFieldChange}
             />
           </div>
           <div className="row2">
             <FieldInput
-              field={OUTREACH_FIELDS[2]}
-              value={fields[OUTREACH_FIELDS[2].key] ?? ""}
+              field={outreachFields[2]}
+              value={fields[outreachFields[2].key] ?? ""}
               onChange={handleFieldChange}
             />
             <FieldInput
-              field={OUTREACH_FIELDS[3]}
-              value={fields[OUTREACH_FIELDS[3].key] ?? ""}
+              field={outreachFields[3]}
+              value={fields[outreachFields[3].key] ?? ""}
               onChange={handleFieldChange}
             />
           </div>
           <FieldInput
-            field={OUTREACH_FIELDS[4]}
-            value={fields[OUTREACH_FIELDS[4].key] ?? ""}
+            field={outreachFields[4]}
+            value={fields[outreachFields[4].key] ?? ""}
             onChange={handleFieldChange}
           />
 

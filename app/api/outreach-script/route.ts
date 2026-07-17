@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { CONTACT_METHODS, ContactMethod, OUTREACH_TONES, OutreachTone } from "@/lib/outreachFields";
 import { buildOutreachPrompt, OutreachFieldValues } from "@/lib/prompts/outreachScript";
+import { LEAD_TYPES, LeadType } from "@/lib/leadTypes";
 import { generateText } from "@/lib/anthropic";
 import { checkRateLimit } from "@/lib/rateLimit";
 import { getSessionValue } from "@/lib/auth";
@@ -8,6 +9,7 @@ import { getSessionValue } from "@/lib/auth";
 interface RequestBody {
   method?: string;
   tone?: string;
+  leadType?: string;
   fields?: OutreachFieldValues;
 }
 
@@ -39,6 +41,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Unknown tone." }, { status: 400 });
   }
 
+  const leadType = body.leadType as LeadType | undefined;
+  if (!leadType || !LEAD_TYPES.includes(leadType)) {
+    return NextResponse.json({ error: "Unknown lead type." }, { status: 400 });
+  }
+
   const fields = body.fields ?? {};
   const hasAnyDetail = Object.values(fields).some((v) => typeof v === "string" && v.trim().length > 0);
   if (!hasAnyDetail) {
@@ -48,7 +55,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const { system, prompt } = buildOutreachPrompt(method, tone, fields);
+  const { system, prompt } = buildOutreachPrompt(method, tone, leadType, fields);
 
   try {
     const script = await generateText(prompt, 800, system);

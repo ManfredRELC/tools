@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { COMMON_OBJECTIONS, OBJECTION_TONES, ObjectionTone } from "@/lib/objectionFields";
+import { getCommonObjections, OBJECTION_TONES, ObjectionTone } from "@/lib/objectionFields";
+import { LEAD_TYPES, LeadType } from "@/lib/leadTypes";
 import { FieldInput } from "@/components/FieldInput";
 import { PanelLabel } from "@/components/PanelLabel";
 import { EmptyState } from "@/components/EmptyState";
@@ -30,12 +31,15 @@ interface ObjectionResult {
 }
 
 export default function ObjectionResponsePage() {
+  const [leadType, setLeadType] = useState<LeadType>(LEAD_TYPES[0]);
   const [objection, setObjection] = useState("");
   const [agentName, setAgentName] = useState("");
   const [tone, setTone] = useState<ObjectionTone>(OBJECTION_TONES[0]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<ObjectionResult | null>(null);
+
+  const commonObjections = getCommonObjections(leadType);
 
   async function handleGenerate() {
     setError(null);
@@ -51,7 +55,7 @@ export default function ObjectionResponsePage() {
       const res = await fetch("/api/objection-response", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tone, objection, agentName }),
+        body: JSON.stringify({ tone, leadType, objection, agentName }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -71,10 +75,10 @@ export default function ObjectionResponsePage() {
       <header>
         <div>
           <p className="brand-eyebrow">Manfred Real Estate Learning Center — Membership Plus Tool</p>
-          <h1>Objection Response Assistant</h1>
+          <h1>FSBO &amp; Expired Listing Objection Response Assistant</h1>
           <p className="sub">
-            Type or pick the objection a FSBO seller gave you. Choose a tone. Get a natural,
-            ready-to-say response — plus a quick note on why it works.
+            Type or pick the objection a FSBO or expired-listing seller gave you. Choose a tone.
+            Get a natural, ready-to-say response — plus a quick note on why it works.
           </p>
         </div>
         <div className="rider">
@@ -83,9 +87,30 @@ export default function ObjectionResponsePage() {
       </header>
 
       <div className="panel form-panel" style={{ marginBottom: 20 }}>
+        <PanelLabel>Lead Type</PanelLabel>
+        <div className="tone-select" style={{ marginBottom: 20 }}>
+          {LEAD_TYPES.map((lt) => (
+            <div
+              key={lt}
+              className={`tone-chip${lt === leadType ? " active" : ""}`}
+              onClick={() => setLeadType(lt)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  setLeadType(lt);
+                }
+              }}
+            >
+              {lt}
+            </div>
+          ))}
+        </div>
+
         <PanelLabel>Common Objections</PanelLabel>
         <div className="tone-select" style={{ marginBottom: 20 }}>
-          {COMMON_OBJECTIONS.map((text) => (
+          {commonObjections.map((text) => (
             <div
               key={text}
               className="tone-chip"

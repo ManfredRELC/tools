@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { OBJECTION_TONES, ObjectionTone } from "@/lib/objectionFields";
 import { buildObjectionPrompt, ObjectionResponsePayload } from "@/lib/prompts/objectionResponse";
+import { LEAD_TYPES, LeadType } from "@/lib/leadTypes";
 import { generateJSON } from "@/lib/anthropic";
 import { checkRateLimit } from "@/lib/rateLimit";
 import { getSessionValue } from "@/lib/auth";
 
 interface RequestBody {
   tone?: string;
+  leadType?: string;
   objection?: string;
   agentName?: string;
 }
@@ -34,13 +36,18 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Unknown tone." }, { status: 400 });
   }
 
+  const leadType = body.leadType as LeadType | undefined;
+  if (!leadType || !LEAD_TYPES.includes(leadType)) {
+    return NextResponse.json({ error: "Unknown lead type." }, { status: 400 });
+  }
+
   const objection = body.objection?.trim();
   if (!objection) {
     return NextResponse.json({ error: "Enter or select an objection first." }, { status: 400 });
   }
 
   const agentName = body.agentName?.trim() ?? "";
-  const { system, prompt } = buildObjectionPrompt(tone, objection, agentName);
+  const { system, prompt } = buildObjectionPrompt(tone, leadType, objection, agentName);
 
   try {
     const payload = await generateJSON<ObjectionResponsePayload>(prompt, 1000, system);

@@ -16,6 +16,7 @@ import {
   ParcelIcon,
   RoadIcon,
   ClipboardListIcon,
+  ReceiptIcon,
 } from "@/components/icons";
 import { PanelLabel } from "@/components/PanelLabel";
 
@@ -32,14 +33,14 @@ const TOOL_CATEGORIES = [
       },
       {
         href: "/tools/outreach-script",
-        title: "FSBO Outreach Script Generator",
-        description: "Build a natural-sounding call, text, door-knock, or email script for a specific FSBO lead.",
+        title: "FSBO & Expired Listing Outreach Script Generator",
+        description: "Build a natural-sounding call, text, door-knock, or email script for a specific FSBO or expired-listing lead.",
         Icon: PhoneIcon,
       },
       {
         href: "/tools/objection-response",
-        title: "Objection Response Assistant",
-        description: "Turn a FSBO seller's objection into a natural, ready-to-say response, with coaching notes.",
+        title: "FSBO & Expired Listing Objection Response Assistant",
+        description: "Turn a FSBO or expired-listing seller's objection into a natural, ready-to-say response, with coaching notes.",
         Icon: ChatIcon,
       },
       {
@@ -53,6 +54,12 @@ const TOOL_CATEGORIES = [
         title: "Open House Kit",
         description: "A printable sign-in sheet for the door, plus a staged follow-up email sequence for every lead you collect.",
         Icon: ClipboardListIcon,
+      },
+      {
+        href: "/tools/seller-net-sheet",
+        title: "Seller Net Sheet Calculator",
+        description: "Set your own commission, tax, and closing-cost assumptions, then give a seller lead a real estimate of what they'd walk away with.",
+        Icon: ReceiptIcon,
       },
     ],
   },

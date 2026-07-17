@@ -6,8 +6,8 @@ import { usePathname, useRouter } from "next/navigation";
 const NAV_ITEMS = [
   { href: "/tools", label: "Dashboard" },
   { href: "/tools/listing-description", label: "Listing Description Generator" },
-  { href: "/tools/outreach-script", label: "FSBO Outreach Script Generator" },
-  { href: "/tools/objection-response", label: "Objection Response Assistant" },
+  { href: "/tools/outreach-script", label: "FSBO & Expired Listing Outreach Script Generator" },
+  { href: "/tools/objection-response", label: "FSBO & Expired Listing Objection Response Assistant" },
   { href: "/tools/ce-tracker-realestate", label: "CE Tracker (Real Estate)" },
   { href: "/tools/inspection-comments", label: "Inspection Report Comment Library" },
   { href: "/tools/report-assistant", label: "AI Report Assistant" },
@@ -23,6 +23,7 @@ const NAV_ITEMS = [
   { href: "/tools/parcel-search", label: "Parcel Search" },
   { href: "/tools/mileage-expense-tracker", label: "Mileage & Expense Tracker" },
   { href: "/tools/open-house-kit", label: "Open House Kit" },
+  { href: "/tools/seller-net-sheet", label: "Seller Net Sheet Calculator" },
 ];
 
 export function Header() {

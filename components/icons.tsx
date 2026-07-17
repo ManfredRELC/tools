@@ -155,6 +155,15 @@ export function ClipboardListIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
+export function ReceiptIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" {...props}>
+      <path d="M6 3h12v18l-2.5-1.5L13 21l-2.5-1.5L8 21l-2-1.5V3Z" strokeLinejoin="round" />
+      <path d="M9 8h6M9 11.5h6M9 15h4" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export function MicIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" {...props}>
